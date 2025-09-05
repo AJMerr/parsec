@@ -119,7 +119,7 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	for _, cr := range e.compiled {
 		hostOK := cr.host == "" || cr.host == reqHost
-		if !hostOK && strings.HasPrefix(path, cr.prefix) {
+		if hostOK && strings.HasPrefix(path, cr.prefix) {
 			cr.rp.ServeHTTP(w, r)
 			return
 		}
