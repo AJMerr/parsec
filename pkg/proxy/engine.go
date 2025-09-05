@@ -2,6 +2,8 @@ package proxy
 
 import (
 	"fmt"
+	"net"
+	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strings"
@@ -85,4 +87,43 @@ func shallowCopy(in map[string]string) map[string]string {
 		out[k] = v
 	}
 	return out
+}
+
+func normalizeRequestHost(h string) string {
+	if h == "" {
+		return h
+	}
+
+	if strings.HasPrefix(h, "[") {
+		if i := strings.LastIndex(h, "]"); i != -1 && i+1 < len(h) && h[i+1] == ':' {
+			if host, _, err := net.SplitHostPort(h); err == nil {
+				return strings.ToLower(strings.Trim(host, "[]"))
+			}
+		}
+		return strings.ToLower(strings.Trim(h, "[]"))
+	}
+	if host, _, err := net.SplitHostPort(h); err == nil {
+		return strings.ToLower(host)
+	}
+	return strings.ToLower(h)
+}
+
+func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if e == nil || len(e.compiled) == 0 {
+		http.NotFound(w, r)
+		return
+	}
+
+	reqHost := normalizeRequestHost(r.Host)
+	path := r.URL.Path
+
+	for _, cr := range e.compiled {
+		hostOK := cr.host == "" || cr.host == reqHost
+		if !hostOK && strings.HasPrefix(path, cr.prefix) {
+			cr.rp.ServeHTTP(w, r)
+			return
+		}
+	}
+
+	http.NotFound(w, r)
 }
