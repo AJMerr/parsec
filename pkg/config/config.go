@@ -11,36 +11,36 @@ import (
 )
 
 type Config struct {
-	Listen         string
-	Routes         []Route
-	ServerTimeouts ServerTimeouts
-	ProxyTimeouts  ProxyTimeouts
+	Listen         string         `json:"listen"`
+	Routes         []Route        `json:"routes"`
+	ServerTimeouts ServerTimeouts `json:"server_timeouts"`
+	ProxyTimeouts  ProxyTimeouts  `json:"proxy_timeouts"`
 }
 
 type Route struct {
-	Match        Match
-	Upstream     string
-	StripPrefix  string
-	PreserveHost bool
-	AddHeaders   map[string]string
+	Match        Match             `json:"match"`
+	Upstream     string            `json:"upstream"`
+	StripPrefix  string            `json:"strip_prefix"`
+	PreserveHost bool              `json:"preserve_host"`
+	AddHeaders   map[string]string `json:"add_headers"`
 }
 
 type Match struct {
-	Host   string
-	Prefix string
+	Host   string `json:"host"`
+	Prefix string `json:"prefix"`
 }
 
 type ServerTimeouts struct {
-	Read  string
-	Write string
-	Idle  string
+	Read  string `json:"read"`
+	Write string `json:"write"`
+	Idle  string `json:"idle"`
 }
 
 type ProxyTimeouts struct {
-	Dial           string
-	TLSHandshake   string
-	IdleConn       string
-	ResponseHeader string
+	Dial           string `json:"dial"`
+	TLSHandshake   string `json:"tls_handshake"`
+	IdleConn       string `json:"idle_conn"`
+	ResponseHeader string `json:"response_header"`
 }
 
 func Load(path string) (Config, error) {
