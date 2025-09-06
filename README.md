@@ -1,5 +1,5 @@
 # Parsec
-A tiny, Caddy-like reverse proxy written in Go. Single binary, static JSON config, and clean defaults. Perfect for local/dev setups (front a React dev server, fan out /api to a Go backend) and small services that don’t need TLS/ACME, hot reload, or load balancing.
+A tiny, Caddy-like reverse proxy written in Go. A static JSON config, and clean defaults. Perfect for local/dev setups (front a React dev server, fan out /api to a Go backend) and small services that don’t need TLS/ACME, hot reload, or load balancing.
 
 - Built on net/http, httputil.ReverseProxy, and a tuned http.Transport
 - Route by host (optional) and path prefix (required)
